@@ -1,9 +1,10 @@
-import React from 'react'
-
+import { FileUpload } from "@/components/file-upload";
 const LandingPage = () => {
   return (
-    <div>LandingPage</div>
-  )
-}
+    <>
+    <FileUpload/>
+    </>
+  );
+};
 
-export default LandingPage
+export default LandingPage;

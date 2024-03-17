@@ -74,3 +74,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.fileDropBg{
+  border:2px dashed black !important;
+  padding: 80px 20px !important;
+}
