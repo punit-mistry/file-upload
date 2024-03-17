@@ -4,6 +4,7 @@ import { FileUploader } from "react-drag-drop-files";
 // import Compressor from "compressorjs";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
+import { Input } from "./ui/input";
 export function FileUpload() {
   interface supabaseData {
     data:Array<object>;
@@ -14,11 +15,13 @@ export function FileUpload() {
   const [fileUrl ,setfileUrl] = useState<string>('')
 
   const getFileUrl = async(fileName)=>{
-    const { Fileurl,error }:supabaseData = await supabase.storage
+    const { data,error }:supabaseData = await supabase.storage
     .from("files")
     .getPublicUrl(fileName)
     // setfileUrl(setfileUrl)
-    console.log(Fileurl,'file url',error)
+    setfileUrl(data.publicUrl)
+    console.log(data,'file url',error)
+    // 
   }
 
   const handleChange = async (file: File) => {
@@ -35,10 +38,10 @@ export function FileUpload() {
       .upload(fileName , file);
       
     if (data) {
-      toast({ title: "Login success" });
+      toast({ title: "File Uploaded !!" });
       getFileUrl(data.fullPath)
     } else {
-      toast({ variant: "destructive", title: "Failed to login !" });
+      toast({ variant: "destructive", title: "Failed to Upload Try Again !" });
     }
     console.log(data,error)
   };
@@ -67,9 +70,9 @@ export function FileUpload() {
         </div> */}
         <Button className="w-full">Upload</Button>
       
+      {fileUrl ? <Input  placeholder="Your Url" value={fileUrl} type="text" /> :null}
       </div>
       {/* <div className="w-full max-w-sm space-y-2">
-        <Input aria-label="Email" placeholder="Enter your email" type="text" />
         <Button className="w-full" type="submit">
           Get Link
         </Button>
