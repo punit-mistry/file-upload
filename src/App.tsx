@@ -8,6 +8,7 @@ const App = () => {
   return (
     <>
        <Toaster />
+       {/* For Hidding the NavBar */}
       {!hideNavbarRoutes() && <Navbar />}
       <Routes>
         <Route
