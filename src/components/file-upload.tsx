@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 // import Compressor from "compressorjs";
 import { LuLoader2 } from "react-icons/lu";
-import shortener from "../../node_modules/shortmyurl";
+// import shortener from "../../node_modules/shortmyurl";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
@@ -12,15 +12,18 @@ export function FileUpload() {
   interface supabaseData {
     data: Array<object>;
   }
+  interface fileUrl {
+    publicUrl:String
+  }
   const { toast } = useToast();
   const fileTypes: Array<string> = ["JPG", "PNG", "GIF"];
   const [file, setFile] = useState<File>();
   const [fileUrl, setfileUrl] = useState<string>("");
   const [isloading, setisloading] = useState<boolean>(false);
   const [CopyLink, setCopyLink] = useState<boolean>(false);
-  const getFileUrl = async (fileName) => {
+  const getFileUrl = async (fileName:String) => {
     try {
-      const { data, error }: supabaseData = await supabase.storage
+      const { data:fileUrl, error:String }: supabaseData = await supabase.storage
         .from("files")
         .getPublicUrl(fileName);
 
@@ -36,8 +39,6 @@ export function FileUpload() {
           modifiedUrl = modifiedUrl.replace("/files", "");
         }
         setfileUrl(modifiedUrl);
-        //   shortener(modifiedUrl).then((res) => {
-        //  });
         setisloading(false);
       }
     } catch (error) {
