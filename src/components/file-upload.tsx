@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
-// import Compressor from "compressorjs";
 import { LuLoader2 } from "react-icons/lu";
-// import shortener from "../../node_modules/shortmyurl";
+import { Progress } from "@/components/ui/progress"
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
 import { Input } from "./ui/input";
+import ImagePreview from "./ImagePreview";
+import { useRecoilState } from "recoil";
+import { ImgLinkArray } from "@/store";
 export function FileUpload() {
   interface supabaseData {
     data: Array<object>;
@@ -18,12 +20,14 @@ export function FileUpload() {
   const { toast } = useToast();
   const fileTypes: Array<string> = ["JPG", "PNG", "GIF"];
   const [file, setFile] = useState<File>();
+  const [ImgArrayLink, setImgArrayLink] = useRecoilState(ImgLinkArray)
   const [fileUrl, setfileUrl] = useState<string>("");
   const [isloading, setisloading] = useState<boolean>(false);
+  const [ProgressValue, setProgressValue] = useState<number>(0);
   const [CopyLink, setCopyLink] = useState<boolean>(false);
-  const getFileUrl = async (fileName:String) => {
+  const getFileUrl = async (fileName:string) => {
     try {
-      const { data:fileUrl, error:String }: supabaseData = await supabase.storage
+      const { data, error }: supabaseData = await supabase.storage
         .from("files")
         .getPublicUrl(fileName);
 
@@ -38,7 +42,10 @@ export function FileUpload() {
           // Remove one occurrence of '/files' from the URL
           modifiedUrl = modifiedUrl.replace("/files", "");
         }
+        const imgUrl = {imgurl:modifiedUrl}
+        setImgArrayLink((prevState) => [...prevState, imgUrl]);
         setfileUrl(modifiedUrl);
+        setProgressValue(100)
         setisloading(false);
       }
     } catch (error) {
@@ -49,6 +56,10 @@ export function FileUpload() {
   };
 
   const handleChange = async (file: File) => {
+    setProgressValue(33)
+    setTimeout(() => {
+      setProgressValue(53)
+    }, 500);
     setFile(file);
     setfileUrl("");
     setisloading(true);
@@ -60,6 +71,7 @@ export function FileUpload() {
     if (data) {
       toast({ title: "File Uploaded !!" });
       getFileUrl(data.fullPath);
+
     } else {
       toast({ variant: "destructive", title: "Failed to Upload Try Again !" });
       setisloading(false);
@@ -80,6 +92,7 @@ export function FileUpload() {
     });
   }
   return (
+    <>
     <div className="flex flex-col items-center space-y-4 mt-20">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Secure File Upload</h1>
@@ -94,6 +107,8 @@ export function FileUpload() {
           types={fileTypes}
           classes="fileDropBg"
         />
+        {isloading ? <Progress value={ProgressValue} /> : null }
+
 
         <Button className="w-full">
           {isloading ? (
@@ -119,7 +134,13 @@ export function FileUpload() {
             </div>
           </div>
         ) : null}
+
       </div>
     </div>
+<div className=" w-screen h-1/2 overflow-scroll">
+<ImagePreview />
+</div>
+    </>
+
   );
 }
