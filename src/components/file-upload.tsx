@@ -106,6 +106,7 @@ export function FileUpload() {
           name="file"
           types={fileTypes}
           classes="fileDropBg"
+          label= {isloading? 'Loading.....' : 'File Uploader'}
         />
         {isloading ? <Progress value={ProgressValue} /> : null }
 
@@ -137,7 +138,7 @@ export function FileUpload() {
 
       </div>
     </div>
-<div className=" w-screen h-1/2 overflow-scroll">
+<div className=" w-screen h-1/2 mt-10">
 <ImagePreview />
 </div>
     </>

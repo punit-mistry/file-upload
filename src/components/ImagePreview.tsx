@@ -6,14 +6,18 @@ const ImagePreview = () => {
 
     console.log(ImgArrayLink);
     return (
-        <div className="w-full flex gap-4">
+        <>
+        <h1 className="text-center font-bold text-2xl mb-4">Image Preview</h1>
+        <div className="w-full flex flex-wrap gap-4">
             {ImgArrayLink.map((res, index) => (
-                <div key={index}>
-                    <img src={res.imgurl} alt={`Image ${index}`} loading="lazy" className=""/>
-                    <br />
+                    <a href={res.imgurl} target="_blank">
+                <div key={index} className="image-container hover:shadow-2xl hover:cursor-pointer p-5 flex items-center justify-center ">
+                    <img src={res.imgurl} alt={`Image ${index}`} loading="lazy" className="image"/>
                 </div>
+                    </a>
             ))}
         </div>
+            </>
     );
 };
 
