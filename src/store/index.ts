@@ -4,3 +4,7 @@ import { atom } from "recoil";
   key: 'ImgLinkArray',
   default: [],
 });
+ export const userData = atom({
+  key: 'currentUserData',
+  default: [],
+});

@@ -7,6 +7,10 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { LuLoader2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userData } from "@/store";
+
+
 interface SignUpData {
   target: {
     name: string;
@@ -18,9 +22,10 @@ interface SignUpDataType {
   password: string;
 }
 interface supabaseData {
-  data:Array<object>;
+  data: Array<object>;
 }
 const Login = () => {
+  const [currentUser, setCurrentUser] = useRecoilState(userData)
   const { toast } = useToast();
   const navigation = useNavigate();
   const [signUpData, useSignUpData] = useState<SignUpDataType>({
@@ -37,31 +42,69 @@ const Login = () => {
     }));
   };
 
+  const checkExtistingUser = async () => {
+    try {
+      let { data: file_upload_user, error } = await supabase
+        .from("file_upload_user")
+        .select("*");
+      if (error) {
+        throw new Error(error.message);
+      }
+      const data = file_upload_user.filter(
+        (extistingUser) =>
+          signUpData.email.toLowerCase() ===
+          extistingUser.user_name.toLowerCase()
+      );
+      if(data.length) return true
+      else return false
+      
+    } catch (err) {
+      toast({ variant: "destructive", title: err });
+      setisloading(false);
+      return false;
+    }
+  };
+
   const handleSignUp = async () => {
     setisloading(true);
     try {
-      if (signUpData.email && signUpData.password) {
-        const { data }:supabaseData = await supabase
-          .from("file_upload_user")
-          .insert([
-            { user_name: signUpData.email, user_password: signUpData.password },
-          ])
-          .select();
-        if (data?.length > 0) {
-          toast({ title: "Login success" });
-          setisloading(false);
-          localStorage.setItem("file_upload_user",signUpData.email);
-          navigation("/");
-        } else {
-          toast({ variant: "destructive", title: "Failed to login !" });
-          setisloading(false);
-        }
+      if (await checkExtistingUser()) {
+        toast({
+          variant: "destructive",
+          title: "User already exists Please enter your different user name",
+        });
       } else {
-        setisloading(false);
-        toast({variant: "destructive", title: "Please Fill the Required Fields" });
+        if (signUpData.email && signUpData.password) {
+          console.log("new user");
+
+          const { data }: supabaseData = await supabase
+            .from("file_upload_user")
+            .insert([
+              { user_name: signUpData.email, user_password: signUpData.password },
+            ])
+            .select();
+          if (data?.length > 0) {
+            toast({ title: "Login success" });
+            console.log(data);
+            setCurrentUser(data)
+            setisloading(false);
+            localStorage.setItem("file_upload_user", signUpData.email);
+            localStorage.setItem("current_user_id", data[0].id);
+            navigation("/");
+          } else {
+            toast({ variant: "destructive", title: "Failed to login !" });
+            setisloading(false);
+          }
+        } else {
+          setisloading(false);
+          toast({
+            variant: "destructive",
+            title: "Please Fill the Required Fields",
+          });
+        }
       }
     } catch (error) {
-      toast({variant: "destructive", title: "Failed to login !"});
+      toast({ variant: "destructive", title: "Failed to login !" });
       setisloading(false);
     }
   };
@@ -119,7 +162,7 @@ const Login = () => {
           />
         </div>
         <div className="absolute top-[60%] text-white animate-bounce left-[250px]  w-full max-w-sm  font-extrabold text-5xl">
-          Store all Information at one Place..
+          Store all Images at one Place..
         </div>
       </div>
     </div>

@@ -9,7 +9,8 @@ import { useToast } from "./ui/use-toast";
 import { Input } from "./ui/input";
 import ImagePreview from "./ImagePreview";
 import { useRecoilState } from "recoil";
-import { ImgLinkArray } from "@/store";
+import { ImgLinkArray,userData } from "@/store";
+
 export function FileUpload() {
   interface supabaseData {
     data: Array<object>;
@@ -21,6 +22,7 @@ export function FileUpload() {
   const fileTypes: Array<string> = ["JPG", "PNG", "GIF"];
   const [file, setFile] = useState<File>();
   const [ImgArrayLink, setImgArrayLink] = useRecoilState(ImgLinkArray)
+  const [currentUser, setCurrentUser] = useRecoilState(userData)
   const [fileUrl, setfileUrl] = useState<string>("");
   const [isloading, setisloading] = useState<boolean>(false);
   const [ProgressValue, setProgressValue] = useState<number>(0);
@@ -66,7 +68,7 @@ export function FileUpload() {
     const fileName = uuidv4();
     const { data, error }: supabaseData = await supabase.storage
       .from("files")
-      .upload(fileName, file);
+      .upload(fileName+'=='+localStorage.getItem('current_user_id'), file);
 
     if (data) {
       toast({ title: "File Uploaded !!" });
