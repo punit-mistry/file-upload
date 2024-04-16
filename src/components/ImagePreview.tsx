@@ -53,7 +53,7 @@ const ImagePreview = () => {
       <div className="w-full flex flex-wrap gap-4">
         {ImgArrayLink.map((res, index) => (
           <a
-            href={res.publicUrl}
+            href={res?.publicUrl}
             target="_blank"
           >
             <div

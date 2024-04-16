@@ -5,7 +5,8 @@ import { FaFilePowerpoint } from "react-icons/fa";
 const Navbar = () => {
   const navigation = useNavigate();
   const handleRedirect = () => {
-    navigation("/login");
+    localStorage.clear();
+    navigation("/");
   };
   const userName = localStorage.getItem("file_upload_user");
   return (

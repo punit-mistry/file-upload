@@ -50,7 +50,7 @@ const Login = () => {
       if (error) {
         throw new Error(error.message);
       }
-      const data = file_upload_user.filter(
+      const data = file_upload_user?.filter(
         (extistingUser) =>
           signUpData.email.toLowerCase() ===
           extistingUser.user_name.toLowerCase()
@@ -58,8 +58,8 @@ const Login = () => {
       if(data.length) return true
       else return false
       
-    } catch (err) {
-      toast({ variant: "destructive", title: err });
+    } catch (err:any) {
+      toast({ variant: "destructive", title: err.message});
       setisloading(false);
       return false;
     }
@@ -90,7 +90,7 @@ const Login = () => {
             setisloading(false);
             localStorage.setItem("file_upload_user", signUpData.email);
             localStorage.setItem("current_user_id", data[0].id);
-            navigation("/");
+            navigation("/file-upload");
           } else {
             toast({ variant: "destructive", title: "Failed to login !" });
             setisloading(false);
@@ -154,15 +154,15 @@ const Login = () => {
         </div>
       </div>
       <div className="relative bg-gray-300 w-1/2 max-h-[100vh] ">
-        <div className=" flex items-center justify-center pt-[100px]  ">
+        <div className=" flex items-center justify-center  bg-red-500 relative">
           <img
             src={getImage("Login", "sign-up-1.avif")}
             loading="lazy"
-            className="absolute w-1/2 top-[10%] rounded-2xl"
+            className="absolute w-1/2 top-20 rounded-2xl"
           />
-        </div>
-        <div className="absolute top-[60%] text-white animate-bounce left-[250px]  w-full max-w-sm  font-extrabold text-5xl">
+        <div className="absolute mt-[120%] text-white animate-bounce left-[28%]  w-full max-w-sm  font-extrabold text-5xl">
           Store all Images at one Place..
+        </div>
         </div>
       </div>
     </div>

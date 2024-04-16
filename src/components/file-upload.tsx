@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { LuLoader2 } from "react-icons/lu";
 import { Progress } from "@/components/ui/progress"
@@ -27,6 +27,10 @@ export function FileUpload() {
   const [isloading, setisloading] = useState<boolean>(false);
   const [ProgressValue, setProgressValue] = useState<number>(0);
   const [CopyLink, setCopyLink] = useState<boolean>(false);
+  useEffect(()=>{
+  },[]);
+
+
   const getFileUrl = async (fileName:string) => {
     try {
       const { data, error }: supabaseData = await supabase.storage
