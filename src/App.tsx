@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import { hideNavbarRoutes } from "./lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { RecoilRoot } from "recoil";
+import PrivateRoutes from "./PrivateRoutes";
 const App = () => {
   return (
     <>
@@ -14,12 +15,13 @@ const App = () => {
         {!hideNavbarRoutes() && <Navbar />}
         <Routes>
           <Route
+            element={<PrivateRoutes />}
+          >
+          <Route element={<LandingPage/>} path='/file-upload' />
+          </Route>
+          <Route 
             path="/"
-            element={<LandingPage />}
-          />
-          <Route
-            path="/login"
-            element={<Login />}
+            element={<Login/>}
           />
         </Routes>
       </RecoilRoot>

@@ -1,7 +1,10 @@
 import { atom } from "recoil";
 
-
- export const counterState = atom({
-  key: 'counter',
-  default: 0,
+ export const ImgLinkArray = atom({
+  key: 'ImgLinkArray',
+  default: [],
+});
+ export const userData = atom({
+  key: 'currentUserData',
+  default: [],
 });

@@ -79,3 +79,14 @@
   border:2px dashed black !important;
   padding: 80px 20px !important;
 }
+
+.image-container {
+  width: 350px; 
+}
+
+.image {
+  max-width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
