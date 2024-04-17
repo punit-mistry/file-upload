@@ -21,11 +21,9 @@ interface SignUpDataType {
   email: string;
   password: string;
 }
-interface supabaseData {
-  data: Array<object>;
-}
+
 const Login = () => {
-  const [currentUser, setCurrentUser] = useRecoilState(userData)
+  const [ setCurrentUser] = useRecoilState<any>(userData)
   const { toast } = useToast();
   const navigation = useNavigate();
   const [signUpData, useSignUpData] = useState<SignUpDataType>({
@@ -55,7 +53,7 @@ const Login = () => {
           signUpData.email.toLowerCase() ===
           extistingUser.user_name.toLowerCase()
       );
-      if(data.length) return true
+      if(data?.length) return true
       else return false
       
     } catch (err:any) {
@@ -77,13 +75,13 @@ const Login = () => {
         if (signUpData.email && signUpData.password) {
           console.log("new user");
 
-          const { data }: supabaseData = await supabase
+          const { data } = await supabase
             .from("file_upload_user")
             .insert([
               { user_name: signUpData.email, user_password: signUpData.password },
             ])
             .select();
-          if (data?.length > 0) {
+          if (data) {
             toast({ title: "Login success" });
             console.log(data);
             setCurrentUser(data)
@@ -140,10 +138,20 @@ const Login = () => {
             />
           </div>
         </div>
-        <div className="mt-10 flex px-4">
+        <div className="mt-10 flex px-4 gap-2">
           <Button
             className="w-[250px]"
             onClick={handleSignUp}
+          >
+            {isloading ? (
+              <LuLoader2 className="animate-spin text-xl" />
+            ) : (
+              "Log In"
+            )}
+          </Button>
+          <Button
+            className="w-[250px]"
+            onClick={()=>navigation('/sign-up')}
           >
             {isloading ? (
               <LuLoader2 className="animate-spin text-xl" />

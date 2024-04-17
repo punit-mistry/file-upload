@@ -1,11 +1,10 @@
 import { useRecoilState } from "recoil";
 import { ImgLinkArray } from "@/store/index";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
 const ImagePreview = () => {
-  const [ImgArrayLink, setImgArrayLink] = useRecoilState(ImgLinkArray);
-  const [userImageLink, setImageLink] = useState([]);
+  const [ImgArrayLink, setImgArrayLink] = useRecoilState<any>(ImgLinkArray);
   useEffect(() => {
     fetchAllImages();
   }, []);
@@ -40,7 +39,7 @@ const ImagePreview = () => {
     }
   };
 
-  const getImagesUrl = async (fileName) => {
+  const getImagesUrl = async (fileName:string) => {
     const { data } = await supabase.storage
       .from("files")
       .getPublicUrl(`${fileName}`);
@@ -51,7 +50,7 @@ const ImagePreview = () => {
     <>
       <h1 className="text-center font-bold text-2xl mb-4">Image Preview</h1>
       <div className="w-full flex flex-wrap gap-4">
-        {ImgArrayLink.map((res, index) => (
+        {ImgArrayLink.map((res:any, index:number) => (
           <a
             href={res?.publicUrl}
             target="_blank"
