@@ -6,6 +6,7 @@ import { hideNavbarRoutes } from "./lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { RecoilRoot } from "recoil";
 import PrivateRoutes from "./PrivateRoutes";
+import SignUp from "./pages/sign-up/SignUp";
 const App = () => {
   return (
     <>
@@ -22,6 +23,10 @@ const App = () => {
           <Route 
             path="/"
             element={<Login/>}
+          />
+          <Route 
+            path="/sign-up"
+            element={<SignUp/>}
           />
         </Routes>
       </RecoilRoot>
