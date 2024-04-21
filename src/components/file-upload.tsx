@@ -9,7 +9,8 @@ import { useToast } from "./ui/use-toast";
 import { Input } from "./ui/input";
 import ImagePreview from "./ImagePreview";
 import { useRecoilState } from "recoil";
-import { ImgLinkArray } from "@/store";
+import { ImgLinkArray, userToken } from "@/store";
+import { Toast } from "@radix-ui/react-toast";
 
 export function FileUpload() {
   interface fileUrl {
@@ -19,11 +20,50 @@ export function FileUpload() {
   const fileTypes: Array<string> = ["JPG", "PNG", "GIF"];
   const [File, setFile] = useState<any>();
   const [ImgArrayLink, setImgArrayLink] = useRecoilState<any>(ImgLinkArray);
+  const [currentUserToken, setCurrentUserToken] =
+    useRecoilState<any>(userToken);
+
   const [fileUrl, setfileUrl] = useState<string>("");
   const [isloading, setisloading] = useState<boolean>(false);
   const [ProgressValue, setProgressValue] = useState<number>(0);
   const [CopyLink, setCopyLink] = useState<boolean>(false);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchUserToken();
+  }, []);
+
+  const fetchUserToken = async () => {
+    try {
+      let { data: userToken, error } = await supabase
+        .from("file_upload_user")
+        .select("user_token")
+        .eq("id", localStorage.getItem("current_user_id"))
+      setCurrentUserToken(userToken[0].user_token);
+      if (error) {
+        throw new Error(error);
+      }
+    } catch (err) {
+      console.log(err);
+      toast({ variant: "destructive", title: err.message });
+    }
+  };
+
+  const updateuserToken = async (token: number) => {
+    console.log(token);
+    try {
+      const { data, error } = await supabase
+        .from("file_upload_user")
+        .update({ user_token: token })
+        .eq("id", localStorage.getItem("current_user_id"))
+        .select();
+      console.log(data);
+      if (error) {
+        throw new Error(error);
+      }
+    } catch (err) {
+      console.log(err);
+      toast({ variant: "destructive", title: err.message });
+    }
+  };
 
   const getFileUrl = async (fileName: any) => {
     try {
@@ -50,25 +90,41 @@ export function FileUpload() {
   };
 
   const handleChange = async (file: File) => {
-    setProgressValue(33);
-    setTimeout(() => {
-      setProgressValue(53);
-    }, 500);
-    setFile(file);
-    setfileUrl("");
-    setisloading(true);
-    const fileName = uuidv4();
-    const { data } = await supabase.storage
-      .from("files")
-      .upload(fileName + "==" + localStorage.getItem("current_user_id"), file);
-
-    if (data) {
-      toast({ title: "File Uploaded !!" });
-      const filePath = data;
-      getFileUrl(filePath);
+    if (currentUserToken <= 0) {
+      toast({
+        variant: "destructive",
+        title: `Attention: Token Required for Further Action`,
+      });
     } else {
-      toast({ variant: "destructive", title: "Failed to Upload Try Again !" });
-      setisloading(false);
+      setProgressValue(33);
+      setTimeout(() => {
+        setProgressValue(53);
+      }, 500);
+      setFile(file);
+      setfileUrl("");
+      setisloading(true);
+      const fileName = uuidv4();
+      const { data } = await supabase.storage
+        .from("files")
+        .upload(
+          fileName + "==" + localStorage.getItem("current_user_id"),
+          file
+        );
+
+      if (data) {
+        const updateToken = currentUserToken - 10;
+        setCurrentUserToken(updateToken);
+        updateuserToken(updateToken);
+        toast({ title: "File Uploaded !!" });
+        const filePath = data;
+        getFileUrl(filePath);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Failed to Upload Try Again !",
+        });
+        setisloading(false);
+      }
     }
   };
   const CopiedFunc = () => {
@@ -148,12 +204,12 @@ export function FileUpload() {
           ) : null}
         </div>
       </div>
-      
-      {ImgArrayLink.length && (
-        <div className=" w-screen h-1/2 mt-10">
-          <ImagePreview />
-        </div>
-      )}
+
+      {/* {ImgArrayLink.length && ( */}
+      <div className=" w-screen h-1/2 mt-10">
+        <ImagePreview />
+      </div>
+      {/* )} */}
     </>
   );
 }

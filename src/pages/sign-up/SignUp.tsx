@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { LuLoader2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userData } from "@/store";
+import { userData,userToken } from "@/store";
 
 
 interface SignUpData {
@@ -24,6 +24,7 @@ interface SignUpDataType {
 
 const SignUp = () => {
   const [ currentUser,setCurrentUser] = useRecoilState<any>(userData)
+  const [ currentUserToken,setCurrentUserToken] = useRecoilState<any>(userToken)
   const { toast } = useToast();
   const navigation = useNavigate();
   const [signUpData, useSignUpData] = useState<SignUpDataType>({
@@ -38,29 +39,6 @@ const SignUp = () => {
       ...prevState,
       [currentName]: currentValue,
     }));
-  };
-
-  const checkExtistingUser = async () => {
-    try {
-      let { data: file_upload_user, error } = await supabase
-        .from("file_upload_user")
-        .select("*");
-      if (error) {
-        throw new Error(error.message);
-      }
-      const data = file_upload_user?.filter(
-        (extistingUser) =>
-          signUpData.email.toLowerCase() ===
-          extistingUser.user_name.toLowerCase()
-      );
-      if(data?.length) return true
-      else return false
-      
-    } catch (err:any) {
-      toast({ variant: "destructive", title: err.message});
-      setisloading(false);
-      return false;
-    }
   };
 
   const handleSignUp = async () => {
@@ -81,6 +59,7 @@ const SignUp = () => {
             toast({ title: "Login success" });
             setCurrentUser(data)
             setisloading(false);
+            setCurrentUserToken(data[0].user_token)
             localStorage.setItem("file_upload_user", signUpData.email);
             localStorage.setItem("current_user_id", data[0].id);
             navigation("/file-upload");

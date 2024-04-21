@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { userToken } from "@/store";
+import { useRecoilState } from "recoil";
 interface NavBarUserBoxProps {
     userName: string;
   }
@@ -19,6 +21,8 @@ const NavBarUserBox = ({ userName }:NavBarUserBoxProps) => {
     localStorage.clear();
     navigation("/");
   };
+  const [ currentUserToken,setCurrentUserToken] = useRecoilState<any>(userToken)
+
   return (
     <>
       <div className="flex items-center gap-2 hover:cursor-pointer text-black ">
@@ -37,7 +41,7 @@ const NavBarUserBox = ({ userName }:NavBarUserBoxProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem >
-              Token Left :&nbsp; <span className="font-bold"> 00</span>
+              Token Left :&nbsp; <span className="font-bold">{currentUserToken}</span>
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem className="hover:cursor-pointer" onClick={handleSignOut}>
               Log Out

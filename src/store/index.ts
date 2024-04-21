@@ -8,3 +8,7 @@ import { atom } from "recoil";
   key: 'currentUserData',
   default: [],
 });
+ export const userToken = atom({
+  key: 'currentUserToken',
+  default: 0,
+});

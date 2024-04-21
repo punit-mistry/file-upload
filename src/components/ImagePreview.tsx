@@ -52,7 +52,7 @@ const ImagePreview = () => {
 
   return (
     <>
-      <h1 className="text-center font-bold text-2xl mb-4">Image Preview</h1>
+      <h1 className="text-center font-bold text-2xl mb-4">{ImgArrayLink.length ? 'Image Preview' :' '}</h1>
       <div className={`w-full flex flex-wrap gap-4 items-center px-5`}>
         {isLoading &&
           array.map((res) => (
@@ -67,6 +67,7 @@ const ImagePreview = () => {
           <a
             href={res?.publicUrl}
             target="_blank"
+            key={index}
           >
             <div
               key={index}
