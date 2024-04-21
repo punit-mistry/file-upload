@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { RecoilRoot } from "recoil";
 import PrivateRoutes from "./PrivateRoutes";
 import SignUp from "./pages/sign-up/SignUp";
+import AddToken from "./pages/add-token/AddToken";
 const App = () => {
   return (
     <>
@@ -19,6 +20,7 @@ const App = () => {
             element={<PrivateRoutes />}
           >
           <Route element={<LandingPage/>} path='/file-upload' />
+          <Route element={<AddToken/>} path='/add-token' />
           </Route>
           <Route 
             path="/"
