@@ -12,14 +12,13 @@ import { useRecoilState } from "recoil";
 import { ImgLinkArray } from "@/store";
 
 export function FileUpload() {
-
   interface fileUrl {
     publicUrl: String;
   }
   const { toast } = useToast();
   const fileTypes: Array<string> = ["JPG", "PNG", "GIF"];
-  const [setFile] = useState<any>();
-  const [setImgArrayLink] = useRecoilState<any>(ImgLinkArray);
+  const [File, setFile] = useState<any>();
+  const [ImgArrayLink, setImgArrayLink] = useRecoilState<any>(ImgLinkArray);
   const [fileUrl, setfileUrl] = useState<string>("");
   const [isloading, setisloading] = useState<boolean>(false);
   const [ProgressValue, setProgressValue] = useState<number>(0);
@@ -32,18 +31,17 @@ export function FileUpload() {
         .from("files")
         .getPublicUrl(fileName?.fullPath);
 
-     
-        // If there's no error, update the file URL
-        let modifiedUrl = data?.publicUrl || "";
-        if (modifiedUrl) {
-          // Remove one occurrence of '/files' from the URL
-          modifiedUrl = modifiedUrl.replace("/files", "");
-        }
-        const imgUrl = { imgurl: modifiedUrl };
-        setImgArrayLink((prevState: any) => [...prevState, imgUrl]);
-        setfileUrl(modifiedUrl);
-        setProgressValue(100);
-        setisloading(false);
+      // If there's no error, update the file URL
+      let modifiedUrl = data?.publicUrl || "";
+      if (modifiedUrl) {
+        // Remove one occurrence of '/files' from the URL
+        modifiedUrl = modifiedUrl.replace("/files", "");
+      }
+      const imgUrl = { publicUrl: modifiedUrl };
+      setImgArrayLink((prevState: any) => [...prevState, imgUrl]);
+      setfileUrl(modifiedUrl);
+      setProgressValue(100);
+      setisloading(false);
     } catch (error: any) {
       console.error("Error fetching file URL:", error.message);
       toast({ variant: "destructive", title: "Failed to fetch file URL" });
@@ -150,9 +148,12 @@ export function FileUpload() {
           ) : null}
         </div>
       </div>
-      <div className=" w-screen h-1/2 mt-10">
-        <ImagePreview />
-      </div>
+      
+      {ImgArrayLink.length && (
+        <div className=" w-screen h-1/2 mt-10">
+          <ImagePreview />
+        </div>
+      )}
     </>
   );
 }

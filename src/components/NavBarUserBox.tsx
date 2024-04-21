@@ -17,7 +17,7 @@ const NavBarUserBox = ({ userName }:NavBarUserBoxProps) => {
   const navigation = useNavigate();
   const handleSignOut = () => {
     localStorage.clear();
-    navigation("/login");
+    navigation("/");
   };
   return (
     <>
@@ -36,7 +36,10 @@ const NavBarUserBox = ({ userName }:NavBarUserBoxProps) => {
               <TbPointFilled /> {userName}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem onClick={handleSignOut}>
+            <DropdownMenuCheckboxItem >
+              Token Left :&nbsp; <span className="font-bold"> 00</span>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem className="hover:cursor-pointer" onClick={handleSignOut}>
               Log Out
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
